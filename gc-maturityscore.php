@@ -1252,6 +1252,8 @@ if ( ! class_exists( 'GC_MaturityPlugin' ) ) :
           // contains minified versions of amcharts js files
           wp_enqueue_script( 'gcms-action-js', GCMS_C_ASSETS_URL . 'js/min/functions-min.js', array( 'jquery' ), GCMS_C_VERSION, $infooter );
 
+
+
           // get the graph for this user
           $mykeyname            = 'maturity_score';  
           $yourscore_color      = '#FF7700';  // see also @starcolor_gold
@@ -1426,13 +1428,61 @@ if ( ! class_exists( 'GC_MaturityPlugin' ) ) :
             }  
 
             $thedata = wp_json_encode( $radardata );
-
+/*
           wp_add_inline_script( 'gcms-action-js', 
   '      try {
 var amchart1 = AmCharts.makeChart( "amchart1", 
 ' . $thedata . ' );
 }
 catch( err ) { console.log( err ); } ' );
+
+*/
+
+  $return  = 'var ctx = document.getElementById("myChart");';
+  $return .= 'var myChart = new Chart(ctx, {';
+  $return .= '    type: \'bar\',';
+  $return .= '    data: {';
+  $return .= '        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],';
+  $return .= '        datasets: [{';
+  $return .= '            label: \'# of Votes\',';
+  $return .= '            data: [12, 19, 3, 5, 2, 3],';
+  $return .= '            backgroundColor: [';
+  $return .= '                \'rgba(255, 99, 132, 0.2)\',';
+  $return .= '                \'rgba(54, 162, 235, 0.2)\',';
+  $return .= '                \'rgba(255, 206, 86, 0.2)\',';
+  $return .= '                \'rgba(75, 192, 192, 0.2)\',';
+  $return .= '                \'rgba(153, 102, 255, 0.2)\',';
+  $return .= '                \'rgba(255, 159, 64, 0.2)\'';
+  $return .= '            ],';
+  $return .= '            borderColor: [';
+  $return .= '                \'rgba(255,99,132,1)\',';
+  $return .= '                \'rgba(54, 162, 235, 1)\',';
+  $return .= '                \'rgba(255, 206, 86, 1)\',';
+  $return .= '                \'rgba(75, 192, 192, 1)\',';
+  $return .= '                \'rgba(153, 102, 255, 1)\',';
+  $return .= '                \'rgba(255, 159, 64, 1)\'';
+  $return .= '            ],';
+  $return .= '            borderWidth: 1';
+  $return .= '        }]';
+  $return .= '    },';
+  $return .= '    options: {';
+  $return .= '        scales: {';
+  $return .= '            yAxes: [{';
+  $return .= '                ticks: {';
+  $return .= '                    beginAtZero:true';
+  $return .= '                }';
+  $return .= '            }]';
+  $return .= '        }';
+  $return .= '    }';
+  $return .= '});';
+  
+
+  wp_enqueue_script( 'gcms-chart-js', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js', '', GCMS_C_VERSION, $infooter );
+
+  wp_add_inline_script( 'gcms-chart-js', $return );
+
+          $infooter = true;
+
 
 
           } // if ( $this->survey_data ) {
@@ -1746,6 +1796,8 @@ catch( err ) { console.log( err ); } ' );
         $return .= _x( "Radar graph with your score in this survey.", "table description", "gcmaturity-translate" );
         $return .= '</span>';
 
+
+        $return .= '<canvas id="myChart" width="400" height="400"></canvas>';
 
         if ( GCMS_C_FRONTEND_SHOW_AVERAGES ) {
           $return .= _x( "Your score in red; average score in orange.", "table description", "gcmaturity-translate" );
